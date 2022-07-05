@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="Description" content="Put your description here."><base href="/"><style>body,html{margin:0;padding:0;font-family:sans-serif;background-color:#ededed;--r-main-font-size:24px;--r-heading-margin:20px 0 12px 0}.slides{width:75%!important}.container{top:0!important;display:flex!important;flex-direction:row!important}.column{display:flex;flex-direction:column}.row{display:flex;flex-direction:row}ul{width:100%}section{text-align:left}.popover{position:absolute;background-color:#4d4d4d;padding:1rem 2rem;box-shadow:0 2px 5px 0 rgba(0,0,0,.26);border-radius:10px;width:auto;transform:translate(16px,-15px)}.popover:after{content:"";position:absolute;top:6px;left:-8px;border-style:solid;border-width:18px 12px 0;border-color:#4d4d4d transparent;display:block;width:0;z-index:1;transform:translate(-50%,50%) rotate(90deg)}.popover .hljs-class,.popover .hljs-keyword,.popover .hljs-meta,.popover .hljs-string,.popover .hljs-title{color:#ddd!important;font-weight:400}.reveal pre code{max-height:800px!important}.dna{background-color:green}.zome{background-color:#00f}.coordinator-zomes{background-color:#add8e6}.box,.cell,.conductor,.coordinator-zomes,.dht-shard,.dna,.dna-bundle,.happ,.happ-bundle,.source-chain,.zome{display:flex;align-items:center;justify-content:center;padding:12px;border-width:3px;border-color:#d1d1d1;border-style:solid}</style><link rel="stylesheet" href="holochain-lesson-3/bce6cb85.css"><link rel="stylesheet" href="holochain-lesson-3/5265d60d.css"><link rel="stylesheet" href="holochain-lesson-3/86125abe.css"><title>Holochain Lesson 3</title></head><body><div class="reveal"><div class="slides"><section><h1>HDK: retrieving source chains</h1></section><section><h3>query() (I)</h3><li class="fragment fade-in-then-semi-out">Retrieve the source chain for the cell that's calling "query()"</li><li class="fragment fade-in-then-semi-out">Only way to retrieve private entries</li><pre class="fragment fade-in"><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">use hdk::prelude::*;
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn query_my_full_chain(_: ()) -&gt; ExternResult&lt;<span class="fragment fade-in">Vec&lt;Record&gt;</span>&gt; { 
+  <span class="fragment fade-in">let filter = ChainQueryFilter::new(); // We'll see more options</span>
+
+  <span class="fragment fade-in">let my_full_chain: Vec&lt;Record&gt; = query(filter)?;</span><span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Doesn't do any network call</li><li class="fragment fade-in-then-semi-out">Records in ascendent order (from oldest to latest)</li></span><span class="fragment fade-in"> // No network calls</span>
+
+  <span class="fragment fade-in">Ok(my_full_chain)</span>
+}
+</span>
+
+</span></code></pre></section><section><h3>query() (II)</h3><pre class="fragment fade-in"><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">use hdk::prelude::*;
+
+<span class="fragment fade-in">#[hdk_entry_helper]
+struct Comment {
+  comment: String
+}</span>
+
+<span class="fragment fade-in">#[hdk_entry_defs]
+#[unit_enum(UnitEntryTypes)]
+enum EntryTypes { 
+  Comment(Comment),
+}</span>
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn query_my_comments(_: ()) -&gt; ExternResult&lt;Vec&lt;Record&gt;&gt; { 
+  <span class="fragment fade-in">let comment_entry_type: EntryType = UnitEntryTypes::Comment.try_into()?;</span><span class="fragment fade-in-then-out popover">Generated with "#[unit_enum(UnitEntryTypes)]"</span>
+
+  <span class="fragment fade-in">let filter = ChainQueryFilter::new().entry_type(comment_entry_type); // Filter by the given entry type</span>
+
+  <span class="fragment fade-in">let all_my_comments = query(filter)?;</span><span class="fragment fade-in"> // Only the records which create or update comments</span>
+
+  <span class="fragment fade-in">Ok(all_my_comments)</span>
+}
+</span>
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn query_all_links_i_created(_: ()) -&gt; ExternResult&lt;Vec&lt;Record&gt;&gt; { 
+  <span class="fragment fade-in">let filter = ChainQueryFilter::new().action_type(ActionType::CreateLink<span class="fragment fade-in-then-out popover">May be any kind of action</span>);</span>
+
+  <span class="fragment fade-in">let all_links_i_created = query(filter)?;</span><span class="fragment fade-in"> // Only the records whose action is of type "CreateLink"</span>
+
+  <span class="fragment fade-in">Ok(all_links_i_created)</span>
+}
+</span>
+</span></code></pre></section><section><h3>get_agent_activity()</h3><li class="fragment fade-in-then-semi-out">Retrieve the source chain actions for a given agent<ul><li class="fragment fade-in-then-semi-out">All actions are public in the DHT</li></ul></li><li class="fragment fade-in-then-semi-out">Doesn't return entries</li><pre class="fragment fade-in"><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">use hdk::prelude::*;
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn get_comments_created_by(author: AgentPubKey) -&gt; ExternResult&lt;Vec&lt;ActionHash&gt;&gt; { 
+  <span class="fragment fade-in">let filter = ChainQueryFilter::new(); // Same options as "query"</span>
+
+  <span class="fragment fade-in">let agent_activity = get_agent_activity(
+    author,
+    filter,
+    ActivityRequest::Full
+  );</span>
+}
+</span>
+
+</span></code></pre></section></div></div><script type="module" src="./holochain-lesson-3/f97af496.js"></script></body></html>
