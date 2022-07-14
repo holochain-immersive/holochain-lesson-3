@@ -135,100 +135,105 @@
         <!-- TODO: what to do in the recap? Probably we build it during the weekend -->
 
         <section>
-          <h3>query() (I)</h3>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### query() (I)
 
-          <li class="fragment fade-in-then-semi-out">Retrieve the source chain for the cell that's calling "query()"</li>
-          <li class="fragment fade-in-then-semi-out">Only way to retrieve private entries</li>
-
+            - Retrieve the source chain for the cell that's calling "query()"
+            - Only way to retrieve private entries
+        </fragment>
+        
+        <fragment animate="balanced separate-comments by-line with-ancestry">
           <pre
             class="fragment fade-in"
-          ><code class="rust" data-noescape><span class="fragment fade-in-then-semi-out">use hdk::prelude::*;
+          ><code class="rust" data-noescape>use hdk::prelude::*;
 
-<span class="fragment fade-in-then-semi-out">#[hdk_extern]
-fn query_my_full_chain(_: ()) -> ExternResult&lt;<span class="fragment fade-in">Vec&lt;Record&gt;</span>&gt; { 
-  <span class="fragment fade-in">let filter = ChainQueryFilter::new(); // We'll see more options</span>
+#[hdk_extern]
+fn query_my_full_chain(_: ()) -> ExternResult&lt;Vec&lt;Record&gt;&gt; { 
+  let filter = ChainQueryFilter::new(); // We'll see more options
 
-  <span class="fragment fade-in">let my_full_chain: Vec&lt;Record&gt; = query(filter)?;</span><span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Doesn't do any network call</li><li class="fragment fade-in-then-semi-out">Records in ascendent order (from oldest to latest)</li></span><span class="fragment fade-in"> // No network calls</span>
+  let my_full_chain: Vec&lt;Record&gt; = query(filter)?;<span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Doesn't do any network call</li><li class="fragment fade-in-then-semi-out">Records in ascendent order (from oldest to latest)</li></span> // No network calls
 
-  <span class="fragment fade-in">Ok(my_full_chain)</span>
+  Ok(my_full_chain)
 }
-</span>
-
-</span></code></pre>
+</code></pre>
+        </fragment>
         </section>
 
         <section>
           <h3>query() (II)</h3>
+          <fragment animate="balanced separate-comments by-line with-ancestry">
 
           <pre
             class="fragment fade-in"
-          ><code class="rust" data-noescape><span class="fragment fade-in-then-semi-out">use hdk::prelude::*;
+          ><code class="rust" data-noescape>use hdk::prelude::*;
 
-<span class="fragment fade-in">#[hdk_entry_helper]
+#[hdk_entry_helper]
 struct Comment {
   comment: String
-}</span>
+}
 
-<span class="fragment fade-in">#[hdk_entry_defs]
+#[hdk_entry_defs]
 #[unit_enum(UnitEntryTypes)]
 enum EntryTypes { 
   Comment(Comment),
-}</span>
+}
 
-<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+#[hdk_extern]
 fn query_my_comments(_: ()) -> ExternResult&lt;Vec&lt;Record&gt;&gt; { 
-  <span class="fragment fade-in">let comment_entry_type: EntryType = UnitEntryTypes::Comment.try_into()?;</span><span class="fragment fade-in-then-out popover">Generated with "#[unit_enum(UnitEntryTypes)]"</span>
+  let comment_entry_type: EntryType = UnitEntryTypes::Comment.try_into()?;<span class="fragment fade-in-then-out popover">Generated with "#[unit_enum(UnitEntryTypes)]"</span>
 
-  <span class="fragment fade-in">let filter = ChainQueryFilter::new().entry_type(comment_entry_type); // Filter by the given entry type</span>
+  let filter = ChainQueryFilter::new().entry_type(comment_entry_type); // Filter by the given entry type
 
-  <span class="fragment fade-in">let all_my_comments = query(filter)?;</span><span class="fragment fade-in"> // Only the records which create or update comments</span>
+  let all_my_comments = query(filter)?; // Only the records which create or update comments
 
-  <span class="fragment fade-in">Ok(all_my_comments)</span>
+  Ok(all_my_comments)
 }
-</span>
 
-<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+#[hdk_extern]
 fn query_all_links_i_created(_: ()) -> ExternResult&lt;Vec&lt;Record&gt;&gt; { 
-  <span class="fragment fade-in">let filter = ChainQueryFilter::new().action_type(ActionType::CreateLink<span class="fragment fade-in-then-out popover">May be any kind of action</span>);</span>
+  let filter = ChainQueryFilter::new().action_type(ActionType::CreateLink<span class="fragment fade-in-then-out popover">May be any kind of action</span>);
 
-  <span class="fragment fade-in">let all_links_i_created = query(filter)?;</span><span class="fragment fade-in"> // Only the records whose action is of type "CreateLink"</span>
+  let all_links_i_created = query(filter)?; // Only the records whose action is of type "CreateLink"
 
-  <span class="fragment fade-in">Ok(all_links_i_created)</span>
+  Ok(all_links_i_created)
 }
-</span>
-</span></code></pre>
+</code></pre>
+          </fragment>
         </section>
 
 
 
         <section>
-          <h3>get_agent_activity()</h3>
+        <fragment language="markdown" animate="by-line with-ancestry">
+          ### get_agent_activity()
 
-          <li class="fragment fade-in-then-semi-out">Retrieve the source chain actions for a given agent
-            <ul>
-          <li class="fragment fade-in-then-semi-out">All actions are public in the DHT
-          </li>
-            </ul>
-          </li>
-          <li class="fragment fade-in-then-semi-out">Doesn't return entries</li>
+          - Retrieve the source chain actions for a given agent
+            - All actions are public in the DHT
+          - Doesn't return entries
+        </fragment>
 
+        <fragment animate="balanced separate-comments by-line with-ancestry">
           <pre
             class="fragment fade-in"
-          ><code class="rust" data-noescape><span class="fragment fade-in-then-semi-out">use hdk::prelude::*;
+          ><code class="rust" data-noescape>use hdk::prelude::*;
 
-<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+#[hdk_extern]
 fn get_comments_created_by(author: AgentPubKey) -> ExternResult&lt;Vec&lt;ActionHash&gt;&gt; { 
-  <span class="fragment fade-in">let filter = ChainQueryFilter::new(); // Same options as "query"</span>
+  let filter = ChainQueryFilter::new(); // Same options as "query"
 
-  <span class="fragment fade-in">let agent_activity = get_agent_activity(
+  let agent_activity = get_agent_activity(
     author,<!-- TODO: fix taking into account the latest API -->
     filter,
     ActivityRequest::Full
-  );</span>
+  )?;
 }
-</span>
+</code></pre>
+        </fragment>
+      </section>
 
-</span></code></pre></section>
+      <section>
+        <h1>That's it!</h1>
+      </section>
       </div>
     </div>
 
@@ -237,7 +242,8 @@ fn get_comments_created_by(author: AgentPubKey) -> ExternResult&lt;Vec&lt;Action
       import Markdown from "reveal.js/plugin/markdown/markdown.esm.js";
       import RevealHighlight from "reveal.js/plugin/highlight/highlight.esm.js";
       import RevealNotes from "reveal.js/plugin/notes/notes.esm.js";
-      import RevealNestedFragments from "reveal.js-nested-fragments";
+      import RevealAnimateFragments from "reveal.js-animate-fragments";
+      import RevealEliminateEmptyLines from "reveal.js-animate-fragments";
 
       let deck = new Reveal({
         transition: "none",
@@ -245,7 +251,8 @@ fn get_comments_created_by(author: AgentPubKey) -> ExternResult&lt;Vec&lt;Action
           Markdown,
           RevealHighlight,
           RevealNotes,
-          RevealNestedFragments,
+          RevealAnimateFragments,
+          RevealEliminateEmptyLines
         ],
       });
       deck.initialize();
