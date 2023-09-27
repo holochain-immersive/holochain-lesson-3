@@ -126,14 +126,16 @@
         <!-- TODO: what to do in the recap? Probably we build it during the weekend -->
 
         <section>
+          <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### query() (I)
 
             - Retrieve the source chain for the cell that's calling "query()"
             - Only way to retrieve private entries
         </fragment>
-        
-        <fragment animate="balanced separate-comments by-line with-ancestry">
+
+          <!-- prettier-ignore -->
+          <fragment animate="balanced separate-comments by-line with-ancestry">
           <pre class="fragment fade-in"><code class="rust" data-noescape="">use hdk::prelude::*;
 
 #[hdk_extern]
@@ -150,6 +152,7 @@ fn query_my_full_chain(_: ()) -&gt; ExternResult&lt;Vec&lt;Record&gt;&gt; {
 
         <section>
           <h3>query() (II)</h3>
+          <!-- prettier-ignore -->
           <fragment animate="balanced separate-comments by-line with-ancestry">
 
           <pre class="fragment fade-in"><code class="rust" data-noescape="">use hdk::prelude::*;
@@ -188,10 +191,9 @@ fn query_all_links_i_created(_: ()) -&gt; ExternResult&lt;Vec&lt;Record&gt;&gt; 
           </fragment>
         </section>
 
-
-
         <section>
-        <fragment language="markdown" animate="by-line with-ancestry">
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
           ### get_agent_activity()
 
           - Retrieve the source chain actions for a given agent
@@ -199,7 +201,8 @@ fn query_all_links_i_created(_: ()) -&gt; ExternResult&lt;Vec&lt;Record&gt;&gt; 
           - Doesn't return entries
         </fragment>
 
-        <fragment animate="balanced separate-comments by-line with-ancestry">
+          <!-- prettier-ignore -->
+          <fragment animate="balanced separate-comments by-line with-ancestry">
           <pre class="fragment fade-in"><code class="rust" data-noescape="">use hdk::prelude::*;
 
 #[hdk_extern]
@@ -214,11 +217,11 @@ fn get_comments_created_by(author: AgentPubKey) -&gt; ExternResult&lt;Vec&lt;Act
 }
 </code></pre>
         </fragment>
-      </section>
+        </section>
 
-      <section>
-        <h1>That's it!</h1>
-      </section>
+        <section>
+          <h1>That's it!</h1>
+        </section>
       </div>
     </div>
 
